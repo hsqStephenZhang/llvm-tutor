@@ -1,3 +1,9 @@
+; ModuleID = 'test_level1.ll'
+source_filename = "test_level1.ll"
+
+; 声明一个外部函数，用于测试调用指令
+declare void @external_func()
+
 ; Case 1: 最基础的测试
 ; 预期：删除 %dead_1, %dead_2
 define i32 @basic_test(i32 %arg) {
@@ -35,4 +41,35 @@ if.true:
 if.end:
   %result = phi i32 [ 0, %entry ], [ %alive_in_true, %if.true ]
   ret i32 %result
+}
+
+; Case 4: 副作用保护 (Side Effects Safety)
+; Level 1 DCE 不能删除由副作用的指令，即使没人用它们的返回值。
+; 预期：保留所有指令，除了 %dead_load
+define void @side_effect_test(i32* %ptr) {
+entry:
+  ; [KEEP] Store 写内存，属于副作用，不能删
+  store i32 10, i32* %ptr
+
+  ; [KEEP] Volatile Load 视为有副作用（硬件IO等），不能删
+  %vload = load volatile i32, i32* %ptr
+
+  ; [DEAD] 普通 Load，读取的值没人用，且无副作用（假设此时不考虑异常），可以删
+  %dead_load = load i32, i32* %ptr
+
+  ; [KEEP] 函数调用可能写文件/打印，不能删
+  call void @external_func()
+  
+  ret void
+}
+
+; Case 5: 影子变量与类型混合
+; 测试非整数类型和被覆盖的变量
+; 预期：删除 %dead_float, %dead_vec
+define <4 x i32> @mixed_types(float %f) {
+entry:
+  %dead_float = fadd float %f, 1.0          ; [DEAD] 浮点数
+  %vec_base = insertelement <4 x i32> undef, i32 1, i32 0
+  %dead_vec = insertelement <4 x i32> %vec_base, i32 2, i32 1 ; [DEAD]
+  ret <4 x i32> %vec_base
 }
