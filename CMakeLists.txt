@@ -5,10 +5,11 @@ project(llvm-tutor)
 # 1. VERIFY LLVM INSTALLATION DIR
 # This is just a bit of a sanity checking.
 #===============================================================================
-set(LT_LLVM_INSTALL_DIR "" CACHE PATH "LLVM installation directory")
+set(LT_LLVM_INSTALL_DIR "/opt/homebrew/opt/llvm"
+    CACHE PATH "LLVM installation directory")
 
 # 1.1 Check the "include" directory
-set(LT_LLVM_INCLUDE_DIR "${LT_LLVM_INSTALL_DIR}/include/llvm")
+set(LT_LLVM_INCLUDE_DIR "/opt/homebrew/opt/llvm/include/llvm")
 if(NOT EXISTS "${LT_LLVM_INCLUDE_DIR}")
 message(FATAL_ERROR
   " LT_LLVM_INSTALL_DIR (${LT_LLVM_INCLUDE_DIR}) is invalid.")

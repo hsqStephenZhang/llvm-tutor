@@ -6,6 +6,8 @@ project(llvm-tutor-hello-world)
 #===============================================================================
 # Set this to a valid LLVM installation dir
 set(LT_LLVM_INSTALL_DIR "" CACHE PATH "LLVM installation directory")
+set(LLVM_ENABLE_ASSERTIONS ON CACHE BOOL "Build LLVM with assertions enabled")
+set(LLVM_ENABLE_RTTI ON CACHE BOOL "Build LLVM with RTTI enabled")
 
 # Add the location of LLVMConfig.cmake to CMake search paths (so that
 # find_package can locate it)
