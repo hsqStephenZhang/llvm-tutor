@@ -11,7 +11,6 @@
 #ifndef LLVM_TUTOR_CONVERT_FCMP_EQ_H
 #define LLVM_TUTOR_CONVERT_FCMP_EQ_H
 
-#include "FindFCmpEq.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/Pass.h"
 
@@ -26,7 +25,7 @@ class Function;
 // New PM interface
 //------------------------------------------------------------------------------
 
-struct ConvertFCmpEq : llvm::PassInfoMixin<ConvertFCmpEq> {
+struct SCCP : llvm::PassInfoMixin<SCCP> {
   // This is one of the standard run() member functions expected by
   // PassInfoMixin. When the pass is executed by the new PM, this is the
   // function that will be called.
@@ -35,7 +34,7 @@ struct ConvertFCmpEq : llvm::PassInfoMixin<ConvertFCmpEq> {
   // This is a helper run() member function overload which can be called by the
   // legacy pass (or any other code) without having to supply a
   // FunctionAnalysisManager argument.
-  bool run(llvm::Function &Func, const FindFCmpEq::Result &Comparisons);
+  bool run(llvm::Function &Func);
 
   // Without isRequired returning true, this pass will be skipped for functions
   // decorated with the optnone LLVM attribute. Note that clang -O0 decorates

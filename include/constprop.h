@@ -1,26 +1,36 @@
 //==============================================================================
 // FILE:
-//    MBAAdd.h
+//    ConvertFCmpEq.h
 //
 // DESCRIPTION:
-//    Declares the MBAAdd pass for the new and the legacy pass managers.
+//    Declares the ConvertFCmpEq pass for the new and the legacy pass managers.
 //
 // License: MIT
 //==============================================================================
-#ifndef LLVM_TUTOR_MBA_ADD_H
-#define LLVM_TUTOR_MBA_ADD_H
 
-#include "llvm/IR/BasicBlock.h"
+#ifndef LLVM_TUTOR_CONVERT_FCMP_EQ_H
+#define LLVM_TUTOR_CONVERT_FCMP_EQ_H
+
 #include "llvm/IR/PassManager.h"
 #include "llvm/Pass.h"
+
+// Forward declarations
+namespace llvm {
+
+class Function;
+
+} // namespace llvm
 
 //------------------------------------------------------------------------------
 // New PM interface
 //------------------------------------------------------------------------------
-struct MBAAdd : public llvm::PassInfoMixin<MBAAdd> {
-  llvm::PreservedAnalyses run(llvm::Function &F,
-                              llvm::FunctionAnalysisManager &);
-  bool runOnBasicBlock(llvm::BasicBlock &B);
+
+struct ConstPropPass : llvm::PassInfoMixin<ConstPropPass> {
+  // This is one of the standard run() member functions expected by
+  // PassInfoMixin. When the pass is executed by the new PM, this is the
+  // function that will be called.
+  llvm::PreservedAnalyses run(llvm::Function &Func,
+                              llvm::FunctionAnalysisManager &FAM);
 
   // Without isRequired returning true, this pass will be skipped for functions
   // decorated with the optnone LLVM attribute. Note that clang -O0 decorates
@@ -28,4 +38,4 @@ struct MBAAdd : public llvm::PassInfoMixin<MBAAdd> {
   static bool isRequired() { return true; }
 };
 
-#endif
+#endif // !LLVM_TUTOR_CONVERT_FCMP_EQ_H

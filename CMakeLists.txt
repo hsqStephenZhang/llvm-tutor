@@ -6,13 +6,13 @@ project(llvm-tutor)
 # This is just a bit of a sanity checking.
 #===============================================================================
 set(LT_LLVM_INSTALL_DIR "/opt/homebrew/opt/llvm"
-    CACHE PATH "LLVM installation directory")
+  CACHE PATH "LLVM installation directory")
 
 # 1.1 Check the "include" directory
 set(LT_LLVM_INCLUDE_DIR "/opt/homebrew/opt/llvm/include/llvm")
 if(NOT EXISTS "${LT_LLVM_INCLUDE_DIR}")
-message(FATAL_ERROR
-  " LT_LLVM_INSTALL_DIR (${LT_LLVM_INCLUDE_DIR}) is invalid.")
+  message(FATAL_ERROR
+    " LT_LLVM_INSTALL_DIR (${LT_LLVM_INCLUDE_DIR}) is invalid.")
 endif()
 
 # 1.2 Check that the LLVMConfig.cmake file exists (the location depends on the
@@ -79,9 +79,9 @@ add_definitions(${LLVM_DEFINITIONS})
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "")
 
 # Build type
-if (NOT CMAKE_BUILD_TYPE)
+if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE
-      STRING "Build type (default Debug):" FORCE)
+    STRING "Build type (default Debug):" FORCE)
 endif()
 
 # Compiler flags
@@ -98,7 +98,7 @@ endif()
 # builds fine). For consistency, add it here too.
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-fvisibility-inlines-hidden" SUPPORTS_FVISIBILITY_INLINES_HIDDEN_FLAG)
-if (${SUPPORTS_FVISIBILITY_INLINES_HIDDEN_FLAG} EQUAL "1")
+if(${SUPPORTS_FVISIBILITY_INLINES_HIDDEN_FLAG} EQUAL "1")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden")
 endif()
 
@@ -112,6 +112,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 # available for the sub-projects.
 #===============================================================================
 add_subdirectory(lib)
-add_subdirectory(tools)
 add_subdirectory(test)
 add_subdirectory(HelloWorld)
