@@ -3,12 +3,15 @@
 set(LLVM_TUTOR_PLUGINS
     SCCP
     ConstProp
+    DCE
     )
 
 set(SCCP_SOURCES
   sccp.cpp)
 set(ConstProp_SOURCES
   constprop.cpp)
+set(DCE_SOURCES
+  dce.cpp)
 
 # CONFIGURE THE PLUGIN LIBRARIES
 # ==============================
