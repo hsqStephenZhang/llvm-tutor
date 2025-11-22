@@ -4,6 +4,7 @@ set(LLVM_TUTOR_PLUGINS
     SCCP
     ConstProp
     DCE
+    Inliner
     )
 
 set(SCCP_SOURCES
@@ -12,6 +13,8 @@ set(ConstProp_SOURCES
   constprop.cpp)
 set(DCE_SOURCES
   dce.cpp)
+set(Inliner_SOURCES
+  inliner.cpp)
 
 # CONFIGURE THE PLUGIN LIBRARIES
 # ==============================

@@ -28,6 +28,20 @@
             ],
             "cwd": "${workspaceFolder}",
             "stopOnEntry": true,
+        },
+        {
+            "name": "Debug Inliner",
+            "type": "lldb",
+            "request": "launch",
+            "program": "/opt/homebrew/opt/llvm/bin/opt",
+            "args": [
+                "-load-pass-plugin=${workspaceFolder}/build/lib/libInliner.dylib",
+                "-passes=my-inliner",
+                "-disable-output",
+                "${workspaceFolder}/mytest/inline/test.ll"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true,
         }
     ]
 }
