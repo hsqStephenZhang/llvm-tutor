@@ -22,6 +22,8 @@
 #include <llvm/Passes/PassBuilder.h>
 #include <vector>
 
+const int INLINE_THRESHOLD = 25;
+
 using namespace llvm;
 
 bool myShouldInline(CallInst *CI) {
@@ -37,7 +39,7 @@ bool myShouldInline(CallInst *CI) {
   size_t InstCount = 0;
   for (const BasicBlock &BB : *Callee) {
     InstCount += BB.size();
-    if (InstCount > 10)
+    if (InstCount > INLINE_THRESHOLD)
       return false;
   }
 
@@ -110,7 +112,8 @@ BasicBlock *inlineFunction(CallInst *cs) {
       }
     }
   }
-  errs() << "Found " << retInstrs.size() << " return instructions\n";
+
+  // errs() << "Found " << retInstrs.size() << " return instructions\n";
 
   llvm::LLVMContext &Context = caller->getContext();
   llvm::IRBuilder<> Builder(Context);
@@ -140,6 +143,13 @@ BasicBlock *inlineFunction(CallInst *cs) {
 
     cs->replaceAllUsesWith(phi);
     cs->eraseFromParent();
+  }
+
+  // handle alloca instructions in the inlinedEntry
+  for (Instruction &I : llvm::make_early_inc_range(*inlinedEntry)) {
+    if (AllocaInst *inst = dyn_cast<AllocaInst>(&I)) {
+      inst->moveBefore(pre->getParent()->getEntryBlock().getFirstInsertionPt());
+    }
   }
 
   return post;

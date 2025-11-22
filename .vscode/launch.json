@@ -38,7 +38,7 @@
                 "-load-pass-plugin=${workspaceFolder}/build/lib/libInliner.dylib",
                 "-passes=my-inliner",
                 "-disable-output",
-                "${workspaceFolder}/mytest/inline/test.ll"
+                "${workspaceFolder}/mytest/inline/test2.ll"
             ],
             "cwd": "${workspaceFolder}",
             "stopOnEntry": true,
