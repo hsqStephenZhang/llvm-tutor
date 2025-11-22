@@ -80,7 +80,7 @@ PreservedAnalyses ConstPropPass::run(Function &F,
 //-----------------------------------------------------------------------------
 // New PM Registration
 //-----------------------------------------------------------------------------
-PassPluginLibraryInfo getConvertFCmpEqPluginInfo() {
+PassPluginLibraryInfo getConstPropPluginInfo() {
   return {LLVM_PLUGIN_API_VERSION, "my-constprop", LLVM_VERSION_STRING,
           [](PassBuilder &PB) {
             PB.registerPipelineParsingCallback(
@@ -98,5 +98,5 @@ PassPluginLibraryInfo getConvertFCmpEqPluginInfo() {
 
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
-  return getConvertFCmpEqPluginInfo();
+  return getConstPropPluginInfo();
 }

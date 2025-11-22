@@ -37,15 +37,11 @@
 
 using namespace llvm;
 
-class Lattice {
-  Constant *c_val;
-};
-
 //------------------------------------------------------------------------------
 // Sparse Conditional Constant Propagation Pass Implementation
 //------------------------------------------------------------------------------
-PreservedAnalyses SCCP::run(Function &Func, 
-                              llvm::FunctionAnalysisManager &FAM) {
+PreservedAnalyses SCCP::run(Function &Func,
+                            llvm::FunctionAnalysisManager &FAM) {
 
   return PreservedAnalyses::all();
 }
@@ -58,7 +54,7 @@ bool SCCP::run(Function &Func) {
 //-----------------------------------------------------------------------------
 // New PM Registration
 //-----------------------------------------------------------------------------
-PassPluginLibraryInfo getConvertFCmpEqPluginInfo() {
+PassPluginLibraryInfo getSCCPPluginInfo() {
   return {LLVM_PLUGIN_API_VERSION, "my-sccp", LLVM_VERSION_STRING,
           [](PassBuilder &PB) {
             PB.registerPipelineParsingCallback(
@@ -76,5 +72,5 @@ PassPluginLibraryInfo getConvertFCmpEqPluginInfo() {
 
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
-  return getConvertFCmpEqPluginInfo();
+  return getSCCPPluginInfo();
 }

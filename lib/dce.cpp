@@ -52,7 +52,7 @@ PreservedAnalyses DCE::run(Function &Func, llvm::FunctionAnalysisManager &FAM) {
 //-----------------------------------------------------------------------------
 // New PM Registration
 //-----------------------------------------------------------------------------
-PassPluginLibraryInfo getConvertFCmpEqPluginInfo() {
+PassPluginLibraryInfo getDCEPluginInfo() {
   return {LLVM_PLUGIN_API_VERSION, "my-dce", LLVM_VERSION_STRING,
           [](PassBuilder &PB) {
             PB.registerPipelineParsingCallback(
@@ -70,5 +70,5 @@ PassPluginLibraryInfo getConvertFCmpEqPluginInfo() {
 
 extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
-  return getConvertFCmpEqPluginInfo();
+  return getDCEPluginInfo();
 }
