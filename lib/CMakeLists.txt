@@ -5,6 +5,7 @@ set(LLVM_TUTOR_PLUGINS
     ConstProp
     DCE
     Inliner
+    SimplifyCFG
     )
 
 set(SCCP_SOURCES
@@ -15,6 +16,8 @@ set(DCE_SOURCES
   dce.cpp)
 set(Inliner_SOURCES
   inliner.cpp)
+set(SimplifyCFG_SOURCES
+  simplifycfg.cpp)
 
 # CONFIGURE THE PLUGIN LIBRARIES
 # ==============================
