@@ -42,6 +42,20 @@
             ],
             "cwd": "${workspaceFolder}",
             "stopOnEntry": true,
-        }
+        },
+        {
+            "name": "Debug SimplifyCFG",
+            "type": "lldb",
+            "request": "launch",
+            "program": "/opt/homebrew/opt/llvm/bin/opt",
+            "args": [
+                "-load-pass-plugin=${workspaceFolder}/build/lib/libSimplifyCFG.dylib",
+                "-passes=my-simplifycfg",
+                "-disable-output",
+                "${workspaceFolder}/mytest/cfg/test.ll"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true,
+        },
     ]
 }
