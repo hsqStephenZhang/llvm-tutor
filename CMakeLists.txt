@@ -112,5 +112,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 # available for the sub-projects.
 #===============================================================================
 add_subdirectory(passes)
+add_subdirectory(codegen)
 add_subdirectory(test)
 add_subdirectory(HelloWorld)
