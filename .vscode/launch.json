@@ -52,7 +52,7 @@
                 "-load-pass-plugin=${workspaceFolder}/build/lib/libSimplifyCFG.dylib",
                 "-passes=my-simplifycfg",
                 "-disable-output",
-                "${workspaceFolder}/mytest/cfg/test.ll"
+                "${workspaceFolder}/mytest/cfg/test2.ll"
             ],
             "cwd": "${workspaceFolder}",
             "stopOnEntry": true,

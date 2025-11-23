@@ -15,12 +15,42 @@
 
 using namespace llvm;
 
+bool removeUnreachableBBs(Function &Func) {
+  bool changed = false;
+
+  // 1. remove unreachable bbs
+
+  std::set<BasicBlock *> reachable;
+  std::deque<BasicBlock *> worklist = {&Func.getEntryBlock()};
+
+  while (!worklist.empty()) {
+    BasicBlock *cur = worklist.back();
+    worklist.pop_back();
+    if (!reachable.insert(cur).second) {
+      continue;
+    }
+
+    for (auto succ : successors(cur)) {
+      worklist.push_back(succ);
+    }
+  }
+  for (auto &bb : llvm::make_early_inc_range(Func)) {
+    if (reachable.find(&bb) == reachable.end()) {
+      bb.removeFromParent();
+      changed = true;
+    }
+  }
+  return changed;
+}
+
 //------------------------------------------------------------------------------
 // Simple Dead Code Elimination Pass
 //------------------------------------------------------------------------------
 PreservedAnalyses DCE::run(Function &Func, llvm::FunctionAnalysisManager &FAM) {
 
   bool changed = false;
+
+  changed |= removeUnreachableBBs(Func);
 
   std::deque<Instruction *> worklist;
   // we heavily relies on isInstructionTriviallyDead utility

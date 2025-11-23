@@ -18,37 +18,8 @@
 
 #include <llvm/IR/InstIterator.h>
 #include <llvm/Passes/PassBuilder.h>
-#include <map>
 
 using namespace llvm;
-
-bool removeUnreachable(Function &Func) {
-  bool changed = false;
-
-  // 1. remove unreachable bbs
-
-  std::set<BasicBlock *> reachable;
-  std::deque<BasicBlock *> worklist = {&Func.getEntryBlock()};
-
-  while (!worklist.empty()) {
-    BasicBlock *cur = worklist.back();
-    worklist.pop_back();
-    if (!reachable.insert(cur).second) {
-      continue;
-    }
-
-    for (auto succ : successors(cur)) {
-      worklist.push_back(succ);
-    }
-  }
-  for (auto &bb : llvm::make_early_inc_range(Func)) {
-    if (reachable.find(&bb) == reachable.end()) {
-      bb.removeFromParent();
-      changed = true;
-    }
-  }
-  return changed;
-}
 
 bool isEmptyBlock(BasicBlock &BB) {
   if (!BB.phis().empty()) {
@@ -114,55 +85,95 @@ bool removeEmptyUnconditionBrBlocks(Function &Func) {
   return changed;
 }
 
+bool canMerge(BasicBlock *A, BasicBlock *B) {
+  // 1. A unconditionally jmp to B
+  bool cond1 = false;
+  if (auto br = dyn_cast<BranchInst>(A->getTerminator());
+      br->isUnconditional() && A->getSingleSuccessor() == B) {
+    cond1 = true;
+  }
+  if (!cond1) {
+    return false;
+  }
+
+  // 2. B has only one predecessor A
+  bool cond2 = B->hasNPredecessors(1) && B->getSinglePredecessor() == A;
+  if (!cond2) {
+    return false;
+  }
+
+  // 3. B has no complicated terminator (we will simplify: B's terminator is
+  // Branch)
+  auto br = dyn_cast<BranchInst>(A->getTerminator());
+  if (!br) {
+    return false;
+  }
+
+  // 4. B has only trivial phi node (we will reject all B that contains phi
+  // node)
+  if (!B->phis().empty()) {
+    return false;
+  }
+
+  return true;
+}
+
+// Merge A, B that A unconditionally br to B and B has only one pred A
 bool mergeBBs(Function &Func) {
   bool changed = false;
-  // std::deque<BasicBlock *> worklist;
-  // worklist.push_back(&Func.getEntryBlock());
+  std::deque<BasicBlock *> worklist;
+  worklist.push_back(&Func.getEntryBlock());
+  std::set<BasicBlock *> visited;
 
-  // std::map<BasicBlock *, bool> visited;
+  // we will iterate over the cfg
+  while (!worklist.empty()) {
+    BasicBlock *A = worklist.front();
+    worklist.pop_front();
 
-  // while (!worklist.empty()) {
-  //   BasicBlock *A = worklist.front();
-  //   worklist.pop_front();
+    // has visited
+    if (!visited.insert(A).second) {
+      continue;
+    }
 
-  //   if (visited[A]) {
-  //     continue;
-  //   } else {
-  //     visited[A] = true;
-  //   }
+    if (auto br = dyn_cast<BranchInst>(A->getTerminator());
+        br && br->isUnconditional()) {
+      auto B = A->getSingleSuccessor();
+      if (canMerge(A, B)) {
+        A->getTerminator()->removeFromParent();
+        A->splice(A->end(), B);
+        for (auto succ : successors(A)) {
+          for (auto &phi : succ->phis()) {
+            phi.replaceIncomingBlockWith(B, A);
+          }
+        }
+        B->eraseFromParent();
+      }
+    }
 
-  //   if (auto br = dyn_cast<BranchInst>(A->getTerminator())) {
-
-  //   } else {
-  //     for (auto succ : successors(A)) {
-  //       worklist.push_back(succ);
-  //     }
-  //   }
-  // }
+    for (auto succ : successors(A)) {
+      worklist.push_back(succ);
+    }
+  }
   return changed;
 }
 
 //------------------------------------------------------------------------------
 // SimplifyCFG Pass Implementation
 // will do the following things:
-// 1. Remove unreachable bbs
-// 2. Remove bbs that has no solid instructions but unconditional branch
+// 1. Remove bbs that has no solid instructions but unconditional branch
 // 3. Merge A, B that A unconditionally br to B and B has only one pred A
-// 4. Hoisting and Sinking for simple `if else` structure
-// 5. Optional, turn phinode into select inst for simple `if else` structure
+// 3. Hoisting and Sinking for simple `if else` structure
+// 4. Optional, turn phinode into select inst for simple `if else` structure
 //------------------------------------------------------------------------------
 PreservedAnalyses SimplifyCFG::run(Function &Func,
                                    llvm::FunctionAnalysisManager &FAM) {
 
   bool changed = false;
 
-  // 1. remove unreachable bbs
-  changed |= removeUnreachable(Func);
-
-  // 2. Remove bbs that has no solid instructions but unconditional branch
+  // 1. Remove bbs that has no solid instructions but unconditional branch
   changed |= removeEmptyUnconditionBrBlocks(Func);
 
-  // 3. Merge A, B that A unconditionally br to B and B has only one pred A
+  // 2. Merge A, B that A unconditionally br to B and B has only one pred A
   changed |= mergeBBs(Func);
 
   return changed ? PreservedAnalyses::none() : PreservedAnalyses::all();
