@@ -57,5 +57,19 @@
             "cwd": "${workspaceFolder}",
             "stopOnEntry": true,
         },
+        {
+            "name": "Debug LICM",
+            "type": "lldb",
+            "request": "launch",
+            "program": "/opt/homebrew/opt/llvm/bin/opt",
+            "args": [
+                "-load-pass-plugin=${workspaceFolder}/build/lib/libLICM.dylib",
+                "-passes=my-licm",
+                "-disable-output",
+                "${workspaceFolder}/mytest/licm/test.ll"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true,
+        },
     ]
 }
