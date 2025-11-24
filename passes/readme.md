@@ -2,11 +2,11 @@
 
 - [] constprop
   - implement ConstantFoldInstruction by ourself
-- [] simplifyCFG
+- [x] simplifyCFG
 - [] sscp
 - [] GVN
 - [] mem2reg
 - [] dead store elimination
-- [] LICM
+- [x] LICM
 - [] loop unroll
 - [] loop vectorization
