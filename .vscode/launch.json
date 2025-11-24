@@ -71,5 +71,19 @@
             "cwd": "${workspaceFolder}",
             "stopOnEntry": true,
         },
+        {
+            "name": "Debug LoopRotate",
+            "type": "lldb",
+            "request": "launch",
+            "program": "/opt/homebrew/opt/llvm/bin/opt",
+            "args": [
+                "-load-pass-plugin=${workspaceFolder}/build/lib/libLoopRotate.dylib",
+                "-passes=my-looprotate",
+                "-disable-output",
+                "${workspaceFolder}/mytest/looprotate/test.ll"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true,
+        },
     ]
 }

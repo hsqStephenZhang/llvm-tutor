@@ -7,6 +7,7 @@ set(LLVM_TUTOR_PLUGINS
     Inliner
     SimplifyCFG
     LICM
+    LoopRotate
     )
 
 set(SCCP_SOURCES
@@ -21,6 +22,8 @@ set(SimplifyCFG_SOURCES
   simplifycfg.cpp)
 set(LICM_SOURCES
   licm.cpp)
+set(LoopRotate_SOURCES
+  loop_rotate.cpp)
 
 # CONFIGURE THE PLUGIN LIBRARIES
 # ==============================
