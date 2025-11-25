@@ -85,5 +85,19 @@
             "cwd": "${workspaceFolder}",
             "stopOnEntry": true,
         },
+        {
+            "name": "Debug GVN",
+            "type": "lldb",
+            "request": "launch",
+            "program": "/opt/homebrew/opt/llvm/bin/opt",
+            "args": [
+                "-load-pass-plugin=${workspaceFolder}/build/lib/libGVN.dylib",
+                "-passes=my-gvn",
+                "-disable-output",
+                "${workspaceFolder}/mytest/gvn/test.ll"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true,
+        },
     ]
 }
