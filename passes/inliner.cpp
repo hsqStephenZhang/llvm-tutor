@@ -1,5 +1,5 @@
 #include "inliner.h"
-#include <deque>
+
 #include <llvm/ADT/STLExtras.h>
 #include <llvm/Analysis/InlineAdvisor.h>
 #include <llvm/IR/Attributes.h>
@@ -8,18 +8,19 @@
 #include <llvm/IR/ConstantFolder.h>
 #include <llvm/IR/Function.h>
 #include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/InstIterator.h>
 #include <llvm/IR/InstrTypes.h>
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Value.h>
+#include <llvm/Passes/PassBuilder.h>
 #include <llvm/Passes/PassPlugin.h>
 #include <llvm/Support/Casting.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Transforms/Utils/Cloning.h>
 #include <llvm/Transforms/Utils/Local.h>
 
-#include <llvm/IR/InstIterator.h>
-#include <llvm/Passes/PassBuilder.h>
+#include <deque>
 #include <vector>
 
 const int INLINE_THRESHOLD = 25;
