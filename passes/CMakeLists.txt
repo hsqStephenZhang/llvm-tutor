@@ -8,6 +8,7 @@ set(LLVM_TUTOR_PLUGINS
     SimplifyCFG
     LICM
     LoopRotate
+    Gem5Hook
     )
 
 set(SCCP_SOURCES
@@ -24,6 +25,8 @@ set(LICM_SOURCES
   licm.cpp)
 set(LoopRotate_SOURCES
   loop_rotate.cpp)
+set(Gem5Hook_SOURCES
+  gem5_hook.cpp)
 
 # CONFIGURE THE PLUGIN LIBRARIES
 # ==============================
