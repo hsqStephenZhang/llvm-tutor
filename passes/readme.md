@@ -1,7 +1,9 @@
 ## TODOs
 
+- [x] dce
+- [x] inline
 - [] constprop
-  - implement ConstantFoldInstruction by ourself
+  - [] implement ConstantFoldInstruction by ourself
 - [x] simplifyCFG
 - [] sscp
 - [] GVN
