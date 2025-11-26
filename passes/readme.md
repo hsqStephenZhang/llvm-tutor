@@ -7,6 +7,8 @@
 - [x] simplifyCFG
 - [] sscp
 - [] GVN
+  - [x] base
+  - [ ] memoryssa
 - [] mem2reg
 - [] dead store elimination
 - [x] loop rotate
