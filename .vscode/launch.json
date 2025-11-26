@@ -99,5 +99,19 @@
             "cwd": "${workspaceFolder}",
             "stopOnEntry": true,
         },
+        {
+            "name": "Debug LoopUnroll",
+            "type": "lldb",
+            "request": "launch",
+            "program": "/opt/homebrew/opt/llvm/bin/opt",
+            "args": [
+                "-load-pass-plugin=${workspaceFolder}/build/lib/libLoopUnroll.dylib",
+                "-passes=my-loopunroll",
+                "-disable-output",
+                "${workspaceFolder}/mytest/loopunroll/test.ll"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true,
+        },
     ]
 }
